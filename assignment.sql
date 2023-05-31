@@ -65,5 +65,33 @@ FROM tbl_Marks
 GROUP BY student_roll;
 
 --who have max marks
-select student_name,subject_id,obtained_marks from tbl_student s,
+select student_name,subject_id ,obtained_marks from tbl_student s,
 tbl_marks m where s.roll_no=m.student_roll AND obtained_marks = (SELECT max(obtained_marks) from tbl_marks);
+
+--displays subject
+SELECT
+    (SELECT student_name FROM tbl_student WHERE roll_no = m.student_roll) AS name,
+    (SELECT subject_name FROM tbl_subjects WHERE subject_id = m.subject_id) AS subject,
+    m.obtained_marks
+FROM tbl_marks m
+WHERE m.obtained_marks = (SELECT MAX(obtained_marks) FROM tbl_marks);
+
+Delete from tbl_student s where substr(student_name,-1)='i' and (select obtained_marks from tbl_marks where s.roll_no=student_roll) >60;
+
+
+--altering column in table with fk
+--for student roll
+ALTER TABLE tbl_marks
+ADD student_roll NUMBER;
+
+ALTER TABLE tbl_marks
+ADD CONSTRAINT tbl_student_roll_fk FOREIGN KEY (student_roll) REFERENCES tbl_Student(roll_no) on DELETE CASCADE;
+
+--for subject id
+ALTER TABLE tbl_marks
+ADD subject_id NUMBER;
+
+ALTER TABLE tbl_marks
+ADD CONSTRAINT tbl_subject_id_fk FOREIGN KEY (subject_id) REFERENCES tbl_Subjects(subject_id) on DELETE CASCADE;
+
+
